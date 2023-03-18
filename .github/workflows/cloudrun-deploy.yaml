@@ -8,7 +8,6 @@ jobs:
       name: Build Image and Deploy to GCP Cloud Run
       runs-on: ubuntu-latest
       env:
-        IMAGE_NAME: gcr.io/${{ secrets.GCP_PROJECT }}/${{ secrets.GCP_APPLICATION }}
       steps:
       - name: Checkout repository
         uses: actions/checkout@v3

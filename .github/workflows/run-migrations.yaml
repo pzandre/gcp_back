@@ -1,0 +1,17 @@
+name: cloudrun-deploy
+on:
+  workflow_dispatch
+  jobs:
+    deploy:
+      name: Run migrations
+      runs-on: ubuntu-latest
+      steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Login
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+      - name: Build image
+        run:
+          gcloud builds submit --config migrate.yaml
