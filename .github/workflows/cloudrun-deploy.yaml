@@ -25,4 +25,4 @@ jobs:
       - name: Deploy image
         run:
           gcloud config set project ${{ secrets.GCP_PROJECT }} &&
-          gcloud run deploy ${{ secrets.GCP_APPLICATION }} --platform managed --region ${{ secrets.GCP_REGION }} --image gcr.io/${{ secrets.GCP_PROJECT }}/${{ secrets.GCP_APPLICATION }} --set-cloudsql-instances ${{ secrets.GCP_PROJECT }}:${{ secrets.GCP_REGION }}:${{ secrets.DBMS_RESOURCE_NAME }} --set-secrets APPLICATION_SETTINGS=${{ secrets.APPLICATION_SECRETS }}:latest --service-account ${{ secrets.GCP_EMAIL }} --allow-unauthenticated
+          gcloud run services update ${{ secrets.GCP_PROJECT }} --platform managed --region {{ secrets.GCP_REGION }} --image gcr.io/${{ secrets.GCP_PROJECT }}/${{ secrets.GCP_APPLICATION }}
