@@ -22,7 +22,6 @@ jobs:
           gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT }}/${{ secrets.GCP_APPLICATION }} &&
           gcloud builds submit --pack image=gcr.io/${{ secrets.GCP_PROJECT }}/${{ secrets.GCP_APPLICATION }} &&
           gcloud config set run/region ${{ secrets.GCP_REGION }}
-
       - name: Deploy image
         run:
           gcloud run deploy ${{ secrets.GCP_APPLICATION }} \
@@ -31,4 +30,5 @@ jobs:
             --image gcr.io/${{ secrets.GCP_PROJECT }}/${{ secrets.GCP_APPLICATION }} \
             --set-cloudsql-instances ${{ secrets.GCP_PROJECT }}:${{ secrets.GCP_REGION }}:${{ secrets.DBMS_RESOURCE_NAME }} \
             --set-secrets APPLICATION_SETTINGS=${{ secrets.APPLICATION_SECRETS }}:latest \
+            --service-account ${{ secrets.GCP_EMAIL }} \
             --allow-unauthenticated
