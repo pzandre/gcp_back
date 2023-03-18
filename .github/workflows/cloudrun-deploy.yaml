@@ -5,7 +5,7 @@ on:
       - main
 jobs:
     deploy:
-      name: Setup Gcloud Account
+      name: Build Image and Deploy to GCP Cloud Run
       runs-on: ubuntu-latest
       env:
         IMAGE_NAME: gcr.io/${{ secrets.GCP_PROJECT }}/${{ secrets.GCP_APPLICATION }}
