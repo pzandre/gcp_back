@@ -5,30 +5,30 @@ on:
       - main
 jobs:
     deploy:
-        name: Setup Gcloud Account
-        runs-on: ubuntu-latest
-        env:
-          IMAGE_NAME: gcr.io/${{ secrets.GCP_PROJECT }}/${{ secrets.GCP_APPLICATION }}
-        steps:
-        - name: Login
-          uses: 'google-github-actions/auth@v1'
-          with:
-            credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
-        - name: Checkout repository
-          uses: actions/checkout@v2
-        - name: Build image
-          run: 
-            gcloud config set project ${{ secrets.GCP_PROJECT }}
-            gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT }}/${{ secrets.GCP_APPLICATION }}
-            gcloud builds submit --pack image=gcr.io/${{ secrets.GCP_PROJECT }}/${{ secrets.GCP_APPLICATION }}
-            gcloud config set run/region ${{ secrets.GCP_REGION }}
+      name: Setup Gcloud Account
+      runs-on: ubuntu-latest
+      env:
+        IMAGE_NAME: gcr.io/${{ secrets.GCP_PROJECT }}/${{ secrets.GCP_APPLICATION }}
+      steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Login
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+      - name: Build image
+        run: 
+          gcloud config set project ${{ secrets.GCP_PROJECT }} &&
+          gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT }}/${{ secrets.GCP_APPLICATION }} &&
+          gcloud builds submit --pack image=gcr.io/${{ secrets.GCP_PROJECT }}/${{ secrets.GCP_APPLICATION }} &&
+          gcloud config set run/region ${{ secrets.GCP_REGION }}
 
-        - name: Deploy image
-          run:
-            gcloud run deploy ${{ secrets.GCP_APPLICATION }} \
-              --platform managed \
-              --region ${{ secrets.GCP_REGION }} \
-              --image gcr.io/${{ secrets.GCP_PROJECT }}/${{ secrets.GCP_APPLICATION }} \
-              --set-cloudsql-instances ${{ secrets.GCP_PROJECT }}:${{ secrets.GCP_REGION }}:${{ secrets.DBMS_RESOURCE_NAME }} \
-              --set-secrets APPLICATION_SETTINGS=${{ secrets.APPLICATION_SECRETS }}:latest \
-              --allow-unauthenticated
+      - name: Deploy image
+        run:
+          gcloud run deploy ${{ secrets.GCP_APPLICATION }} \
+            --platform managed \
+            --region ${{ secrets.GCP_REGION }} \
+            --image gcr.io/${{ secrets.GCP_PROJECT }}/${{ secrets.GCP_APPLICATION }} \
+            --set-cloudsql-instances ${{ secrets.GCP_PROJECT }}:${{ secrets.GCP_REGION }}:${{ secrets.DBMS_RESOURCE_NAME }} \
+            --set-secrets APPLICATION_SETTINGS=${{ secrets.APPLICATION_SECRETS }}:latest \
+            --allow-unauthenticated
